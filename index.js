@@ -1,4 +1,4 @@
-const {JSONParseError, InvalidRequestError, MethodNotFoundError, InvalidParamsError} = require('./error')
+const {JSONParseError, InvalidRequestError, MethodNotFoundError, InvalidParamsError, InternalError} = require('./error')
 
 class Chihiro {
   static errorToResponse(error, id) {
@@ -20,6 +20,15 @@ class Chihiro {
   static resultToResponse(result, id) {
     if (typeof id === 'undefined') {
       return
+    }
+
+    try {
+      const resultJSON = JSON.stringify(result)
+      if (typeof resultJSON === 'undefined') {
+        throw new TypeError('stringify returns undefined')
+      }
+    } catch (error) {
+      throw new Error('Unable to convert result to JSON')
     }
 
     return {
@@ -57,7 +66,7 @@ class Chihiro {
     this.methods = methods
   }
 
-  async dispatch(request) {
+  async dispatchRaw(request) {
     function errorToResponse(error) {
       return Chihiro.errorToResponse(error, request.id || null)
     }
@@ -71,7 +80,7 @@ class Chihiro {
         return Chihiro.errorToResponse(new InvalidRequestError(), null)
       }
 
-      const results = (await Promise.all(request.map(req => this.dispatch(req)))).filter(x => typeof x !== 'undefined')
+      const results = (await Promise.all(request.map(req => this.dispatchRaw(req)))).filter(x => typeof x !== 'undefined')
       return results.length === 0 ? undefined : results
     }
 
@@ -112,10 +121,10 @@ class Chihiro {
       }
     }
 
+    let result
     try {
-      const {params, id} = request
-
-      const result = await (() => {
+      const {params} = request
+      result = await (() => {
         if (typeof params === 'undefined') {
           return method()
         }
@@ -130,19 +139,26 @@ class Chihiro {
 
         return method(params)
       })()
-
-      return resultToResponse(result, id)
     } catch (error) {
       return errorToResponse(error)
     }
+
+    return resultToResponse(result)
   }
 
-  async dispatchJSON(json) {
+  async dispatch(text) {
+    let request
     try {
-      const request = JSON.parse(json)
-      return this.dispatch(request)
+      request = JSON.parse(text)
     } catch (error) {
-      return Chihiro.errorToResponse(new JSONParseError(), null)
+      return JSON.stringify(Chihiro.errorToResponse(new JSONParseError(), null))
+    }
+
+    try {
+      const response = await this.dispatchRaw(request)
+      return JSON.stringify(response)
+    } catch (error) {
+      return JSON.stringify(Chihiro.errorToResponse(new InternalError(), request.id || null))
     }
   }
 }

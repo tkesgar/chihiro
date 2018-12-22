@@ -15,6 +15,14 @@ class JSONRPCError extends Error {
     return InvalidParamsError
   }
 
+  static get InternalError() {
+    return InternalError
+  }
+
+  static get CircularStructureError() {
+    return CircularStructureError
+  }
+
   constructor(message, code, data) {
     super(message)
 
@@ -48,6 +56,18 @@ class MethodNotFoundError extends JSONRPCError {
 
 class InvalidParamsError extends JSONRPCError {
   constructor() {
-    super('Invalid parameters', -32602)
+    super('Invalid params', -32602)
+  }
+}
+
+class InternalError extends JSONRPCError {
+  constructor() {
+    super('Internal error', -32603)
+  }
+}
+
+class CircularStructureError extends JSONRPCError {
+  constructor() {
+    super('Converting circular structure to JSON', -32000)
   }
 }

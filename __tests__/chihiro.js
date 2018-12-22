@@ -172,7 +172,7 @@ describe('validateRequest', () => {
   })
 })
 
-describe('examples', () => {
+describe('examples from spec', () => {
   /* eslint-disable camelcase */
   const subtract = (minuend, subtrahend) => minuend - subtrahend
   subtract.mapParams = ({minuend, subtrahend}) => [minuend, subtrahend]
@@ -202,24 +202,24 @@ describe('examples', () => {
   test('rpc call with positional parameters', async () => {
     const request = JSON.parse('{"jsonrpc": "2.0", "method": "subtract", "params": [42, 23], "id": 1}')
     const response = JSON.parse('{"jsonrpc": "2.0", "result": 19, "id": 1}')
-    expect(await dispatcher.dispatch(request)).toEqual(response)
+    expect(await dispatcher.dispatchRaw(request)).toEqual(response)
   })
 
   test('rpc call with named parameters #1', async () => {
     const request = JSON.parse('{"jsonrpc": "2.0", "method": "subtract", "params": {"subtrahend": 23, "minuend": 42}, "id": 3}')
     const response = JSON.parse('{"jsonrpc": "2.0", "result": 19, "id": 3}')
-    expect(await dispatcher.dispatch(request)).toEqual(response)
+    expect(await dispatcher.dispatchRaw(request)).toEqual(response)
   })
 
   test('rpc call with named parameters #2', async () => {
     const request = JSON.parse('{"jsonrpc": "2.0", "method": "subtract", "params": {"minuend": 42, "subtrahend": 23}, "id": 4}')
     const response = JSON.parse('{"jsonrpc": "2.0", "result": 19, "id": 4}')
-    expect(await dispatcher.dispatch(request)).toEqual(response)
+    expect(await dispatcher.dispatchRaw(request)).toEqual(response)
   })
 
   test('a notification #1', async () => {
     const request = JSON.parse('{"jsonrpc": "2.0", "method": "update", "params": [1,2,3,4,5]}')
-    const response = await dispatcher.dispatch(request)
+    const response = await dispatcher.dispatchRaw(request)
 
     expect(response).toBe(undefined)
     expect(update).toBeCalledWith(1, 2, 3, 4, 5)
@@ -227,7 +227,7 @@ describe('examples', () => {
 
   test('a notification #2', async () => {
     const request = JSON.parse('{"jsonrpc": "2.0", "method": "foobar"}')
-    const response = await dispatcher.dispatch(request)
+    const response = await dispatcher.dispatchRaw(request)
 
     expect(response).toBe(undefined)
     expect(foobar).toBeCalled()
@@ -237,19 +237,19 @@ describe('examples', () => {
     const emptyDispatcher = new Chihiro({})
     const request = JSON.parse('{"jsonrpc": "2.0", "method": "foobar", "id": "1"}')
     const response = JSON.parse('{"jsonrpc": "2.0", "error": {"code": -32601, "message": "Method not found"}, "id": "1"}')
-    expect(await emptyDispatcher.dispatch(request)).toEqual(response)
+    expect(await emptyDispatcher.dispatchRaw(request)).toEqual(response)
   })
 
   test('rpc call with invalid JSON', async () => {
     const requestJSON = '{"jsonrpc": "2.0", "method": "foobar, "params": "bar", "baz]'
     const response = JSON.parse('{"jsonrpc": "2.0", "error": {"code": -32700, "message": "Parse error"}, "id": null}')
-    expect(await dispatcher.dispatchJSON(requestJSON)).toEqual(response)
+    expect(JSON.parse(await dispatcher.dispatch(requestJSON))).toEqual(response)
   })
 
   test('rpc call with invalid Request object', async () => {
     const request = JSON.parse('{"jsonrpc": "2.0", "method": 1, "params": "bar"}')
     const response = JSON.parse('{"jsonrpc": "2.0", "error": {"code": -32600, "message": "Invalid Request"}, "id": null}')
-    expect(await dispatcher.dispatch(request)).toEqual(response)
+    expect(await dispatcher.dispatchRaw(request)).toEqual(response)
   })
 
   test('rpc call Batch, invalid JSON', async () => {
@@ -258,13 +258,13 @@ describe('examples', () => {
       {"jsonrpc": "2.0", "method"
     ]`
     const response = JSON.parse('{"jsonrpc": "2.0", "error": {"code": -32700, "message": "Parse error"}, "id": null}')
-    expect(await dispatcher.dispatchJSON(requestJSON)).toEqual(response)
+    expect(JSON.parse(await dispatcher.dispatch(requestJSON))).toEqual(response)
   })
 
   test('rpc call with an empty Array', async () => {
     const request = JSON.parse('[]')
     const response = JSON.parse('{"jsonrpc": "2.0", "error": {"code": -32600, "message": "Invalid Request"}, "id": null}')
-    expect(await dispatcher.dispatch(request)).toEqual(response)
+    expect(await dispatcher.dispatchRaw(request)).toEqual(response)
   })
 
   test('rpc call with an invalid Batch (but not empty)', async () => {
@@ -272,7 +272,7 @@ describe('examples', () => {
     const response = JSON.parse(`[
       {"jsonrpc": "2.0", "error": {"code": -32600, "message": "Invalid Request"}, "id": null}
     ]`)
-    expect(await dispatcher.dispatch(request)).toEqual(response)
+    expect(await dispatcher.dispatchRaw(request)).toEqual(response)
   })
 
   test('rpc call with invalid Batch', async () => {
@@ -282,7 +282,7 @@ describe('examples', () => {
       {"jsonrpc": "2.0", "error": {"code": -32600, "message": "Invalid Request"}, "id": null},
       {"jsonrpc": "2.0", "error": {"code": -32600, "message": "Invalid Request"}, "id": null}
     ]`)
-    expect(await dispatcher.dispatch(request)).toEqual(response)
+    expect(await dispatcher.dispatchRaw(request)).toEqual(response)
   })
 
   test('rpc call Batch', async () => {
@@ -302,7 +302,7 @@ describe('examples', () => {
       {"jsonrpc": "2.0", "result": ["hello", 5], "id": "9"}
     ]`)
 
-    const dispatchResponse = await dispatcher.dispatch(request)
+    const dispatchResponse = await dispatcher.dispatchRaw(request)
 
     expect(dispatchResponse).toEqual(response)
     expect(notify_hello).toBeCalledWith(7)
@@ -316,11 +316,138 @@ describe('examples', () => {
     ]`)
     const response = undefined
 
-    const dispatchResponse = await dispatcher.dispatch(request)
+    const dispatchResponse = await dispatcher.dispatchRaw(request)
 
     expect(dispatchResponse).toEqual(response)
     expect(notify_sum).toBeCalledWith(1, 2, 4)
     expect(notify_hello).toBeCalledWith(7)
   })
   /* eslint-enable camelcase */
+})
+
+describe('result values', () => {
+  const noReturn = jest.fn(() => {})
+  const returnFunction = jest.fn(() => () => 'foo')
+  const returnBuffer = jest.fn(() => Buffer.from('foo'))
+  const returnCircular = jest.fn(() => {
+    const arr = []
+    arr[0] = 'array'
+    arr[1] = arr
+    return arr
+  })
+
+  const dispatcher = new Chihiro({
+    noReturn,
+    returnFunction,
+    returnBuffer,
+    returnCircular
+  })
+
+  describe('no return value', () => {
+    const fn = noReturn
+    const method = 'noReturn'
+
+    const request = {
+      jsonrpc: '2.0',
+      id: 100,
+      method
+    }
+    test('dispatchRaw should throw error', async () => {
+      await expect(dispatcher.dispatchRaw(request)).rejects.toThrow()
+      expect(fn).toBeCalled()
+    })
+    test('dispatch should return internal error response', async () => {
+      const responseJSON = await dispatcher.dispatch(JSON.stringify(request))
+      expect(JSON.parse(responseJSON)).toEqual({
+        jsonrpc: '2.0',
+        id: 100,
+        error: {
+          code: -32603,
+          message: 'Internal error'
+        }
+      })
+      expect(fn).toBeCalled()
+    })
+  })
+
+  describe('return function', () => {
+    const fn = returnFunction
+    const method = 'returnFunction'
+
+    const request = {
+      jsonrpc: '2.0',
+      id: 100,
+      method
+    }
+    test('dispatchRaw should throw error', async () => {
+      await expect(dispatcher.dispatchRaw(request)).rejects.toThrow()
+      expect(fn).toBeCalled()
+    })
+    test('dispatch should return internal error response', async () => {
+      const responseJSON = await dispatcher.dispatch(JSON.stringify(request))
+      expect(JSON.parse(responseJSON)).toEqual({
+        jsonrpc: '2.0',
+        id: 100,
+        error: {
+          code: -32603,
+          message: 'Internal error'
+        }
+      })
+      expect(fn).toBeCalled()
+    })
+  })
+
+  describe('return non-plain object (Buffer)', () => {
+    const fn = returnBuffer
+    const method = 'returnBuffer'
+
+    const request = {
+      jsonrpc: '2.0',
+      id: 100,
+      method
+    }
+    test('dispatchRaw should not throw', async () => {
+      await expect(dispatcher.dispatchRaw(request)).resolves.not.toThrow()
+      expect(fn).toBeCalled()
+    })
+    test('dispatch should return data', async () => {
+      const responseJSON = await dispatcher.dispatch(JSON.stringify(request))
+      expect(JSON.parse(responseJSON)).toEqual({
+        jsonrpc: '2.0',
+        id: 100,
+        result: {
+          type: 'Buffer',
+          data: [102, 111, 111]
+        }
+      })
+      expect(fn).toBeCalled()
+    })
+  })
+
+  describe('return circular', () => {
+    const fn = returnCircular
+    const method = 'returnCircular'
+
+    const request = {
+      jsonrpc: '2.0',
+      id: 100,
+      method
+    }
+    test('dispatchRaw should throw error', async () => {
+      await expect(dispatcher.dispatchRaw(request)).rejects.toThrow()
+      expect(fn).toBeCalled()
+    })
+    test('dispatch should return internal error response', async () => {
+      const responseJSON = await dispatcher.dispatch(JSON.stringify(request))
+      expect(JSON.parse(responseJSON)).toEqual({
+        jsonrpc: '2.0',
+        id: 100,
+        error: {
+          code: -32603,
+          message: 'Internal error'
+        }
+      })
+      expect(fn).toBeCalled()
+    })
+  })
 })
