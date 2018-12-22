@@ -1,5 +1,10 @@
 # chihiro
 
+[![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/xojs/xo)
+[![Build Status](https://travis-ci.org/tkesgar/chihiro.svg?branch=master)](https://travis-ci.org/tkesgar/chihiro)
+[![codecov](https://codecov.io/gh/tkesgar/chihiro/branch/master/graph/badge.svg)](https://codecov.io/gh/tkesgar/chihiro)
+[![Greenkeeper badge](https://badges.greenkeeper.io/tkesgar/chihiro.svg)](https://greenkeeper.io/)
+
 > Implementation of JSON-RPC 2.0
 
 chihiro is an implementation of JSON-RPC 2.0, as specified [here][jsonrpc-spec].
