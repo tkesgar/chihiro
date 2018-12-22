@@ -1,0 +1,34 @@
+{
+  "name": "@tkesgar/chihiro",
+  "version": "0.0.0",
+  "description": "JSON-RPC implementation",
+  "main": "index.js",
+  "scripts": {
+    "lint": "xo",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tkesgar/chihiro.git"
+  },
+  "keywords": [
+    "json",
+    "rpc",
+    "json-rpc"
+  ],
+  "author": "Ted Kesgar <t.kesgar@live.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tkesgar/chihiro/issues"
+  },
+  "homepage": "https://github.com/tkesgar/chihiro#readme",
+  "devDependencies": {
+    "express": "^4.16.4",
+    "jest": "^23.6.0",
+    "xo": "^0.23.0"
+  },
+  "xo": {
+    "semicolon": false,
+    "space": 2
+  }
+}

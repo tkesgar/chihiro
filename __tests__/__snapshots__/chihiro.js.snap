@@ -1,0 +1,50 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`errorToResponse with data 1`] = `
+Object {
+  "error": Object {
+    "code": 100,
+    "data": Object {
+      "key": "abc",
+      "value": 123,
+    },
+    "message": "An error has occured",
+  },
+  "id": "foo",
+  "jsonrpc": "2.0",
+}
+`;
+
+exports[`errorToResponse with falsy data 1`] = `
+Object {
+  "error": Object {
+    "code": 100,
+    "data": null,
+    "message": "An error has occured",
+  },
+  "id": "foo",
+  "jsonrpc": "2.0",
+}
+`;
+
+exports[`errorToResponse with id 1`] = `
+Object {
+  "error": Object {
+    "code": 100,
+    "message": "An error has occured",
+  },
+  "id": "foo",
+  "jsonrpc": "2.0",
+}
+`;
+
+exports[`resultToResponse with id 1`] = `
+Object {
+  "id": "foo",
+  "jsonrpc": "2.0",
+  "result": Object {
+    "key": "abc",
+    "value": 123,
+  },
+}
+`;
