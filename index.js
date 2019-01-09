@@ -1,6 +1,6 @@
-const Dispatcher = require('./lib/dispatcher')
-const {JSONRPCError} = require('./lib/errors')
+const Server = require('./lib/server')
 
-exports.Dispatcher = Dispatcher
-
-exports.JSONRPCError = JSONRPCError
+function createServer(handler) {
+  return new Server(handler)
+}
+exports.createServer = createServer
