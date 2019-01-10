@@ -1,6 +1,5 @@
 /* eslint-env jest */
 const Server = require('../lib/server')
-const C = require('../lib/const')
 
 function createServer() {
   const handler = jest.fn((method, params) => {
@@ -22,7 +21,7 @@ function createServer() {
       return ['hello', 5]
     }
 
-    throw Object.assign(new Error(C.METHOD_NOT_FOUND_MESSAGE), {code: C.METHOD_NOT_FOUND})
+    throw Object.assign(new Error('Method not found'), {code: -32601})
   })
 
   return new Server(handler)

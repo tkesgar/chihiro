@@ -1,6 +1,6 @@
 /* eslint-env jest */
 const Server = require('../lib/server')
-const C = require('../lib/const')
+const error = require('../error')
 
 describe('dispatch', () => {
   test('should call the handler function', async () => {
@@ -151,8 +151,8 @@ describe('dispatchRequest', () => {
       jsonrpc: '2.0',
       id: 100,
       error: {
-        message: C.METHOD_ERROR_MESSAGE,
-        code: C.METHOD_ERROR
+        message: error.METHOD_ERROR.message,
+        code: error.METHOD_ERROR.code
       }
     })
   })
@@ -165,8 +165,8 @@ describe('dispatchRequest', () => {
       jsonrpc: '2.0',
       id: null,
       error: {
-        message: C.INVALID_REQUEST_MESSAGE,
-        code: C.INVALID_REQUEST
+        message: error.INVALID_REQUEST.message,
+        code: error.INVALID_REQUEST.code
       }
     })
     expect(handler).not.toBeCalled()
@@ -247,8 +247,8 @@ describe('dispatchRequest', () => {
       jsonrpc: '2.0',
       id: 104,
       error: {
-        message: C.METHOD_ERROR_MESSAGE,
-        code: C.METHOD_ERROR
+        message: error.METHOD_ERROR.message,
+        code: error.METHOD_ERROR.code
       }
     })
   })
@@ -314,8 +314,8 @@ describe('dispatchRequest', () => {
       jsonrpc: '2.0',
       id: null,
       error: {
-        message: C.INVALID_REQUEST_MESSAGE,
-        code: C.INVALID_REQUEST
+        message: error.INVALID_REQUEST.message,
+        code: error.INVALID_REQUEST.code
       }
     })
   })
@@ -331,8 +331,8 @@ describe('dispatchJSON', () => {
       jsonrpc: '2.0',
       id: null,
       error: {
-        message: C.PARSE_ERROR_MESSAGE,
-        code: C.PARSE_ERROR
+        message: error.PARSE_ERROR.message,
+        code: error.PARSE_ERROR.code
       }
     })
   })

@@ -1,6 +1,34 @@
 /* eslint-env jest */
 const util = require('../lib/util')
 
+describe('JSONRPCError', () => {
+  const {JSONRPCError} = util
+
+  test('should construct without data if data is not provided', () => {
+    const error = new JSONRPCError('foo', 100)
+    expect(error).toBeInstanceOf(JSONRPCError)
+    expect(error.message).toBe('foo')
+    expect(error.code).toBe(100)
+    expect(error.data).toBeUndefined()
+  })
+
+  test('should construct with data if data is provided', () => {
+    const error = new JSONRPCError('foo', 100, {foo: 'bar'})
+    expect(error).toBeInstanceOf(JSONRPCError)
+    expect(error.message).toBe('foo')
+    expect(error.code).toBe(100)
+    expect(error.data).toEqual({foo: 'bar'})
+  })
+
+  test('should construct with data if data is falsy', () => {
+    const error = new JSONRPCError('foo', 100, null)
+    expect(error).toBeInstanceOf(JSONRPCError)
+    expect(error.message).toBe('foo')
+    expect(error.code).toBe(100)
+    expect(error.data).toBe(null)
+  })
+})
+
 describe('formatError', () => {
   const {formatError} = util
 
