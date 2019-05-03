@@ -1,5 +1,5 @@
 /* eslint-env jest */
-const Server = require('../lib/server')
+const Server = require('../util/server')
 
 function createServer() {
   const handler = jest.fn((method, params) => {
