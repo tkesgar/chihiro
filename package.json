@@ -23,8 +23,8 @@
   },
   "homepage": "https://github.com/tkesgar/chihiro#readme",
   "devDependencies": {
-    "husky": "^2.0.0",
-    "jest": "^23.6.0",
+    "husky": "^2.2.0",
+    "jest": "^24.8.0",
     "xo": "^0.24.0"
   },
   "husky": {
