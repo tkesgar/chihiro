@@ -3,19 +3,19 @@ const Server = require('../lib/server')
 const C = require('../lib/const')
 
 function createServer() {
-  const handler = jest.fn((method, params) => {
+  const handler = jest.fn((method, parameters) => {
     if (method === 'subtract') {
-      if (Array.isArray(params)) {
-        const [minuend, subtrahend] = params
+      if (Array.isArray(parameters)) {
+        const [minuend, subtrahend] = parameters
         return minuend - subtrahend
       }
 
-      const {minuend, subtrahend} = params
+      const {minuend, subtrahend} = parameters
       return minuend - subtrahend
     }
 
     if (method === 'sum') {
-      return params.reduce((sum, value) => sum + value, 0)
+      return parameters.reduce((sum, value) => sum + value, 0)
     }
 
     if (method === 'get_data') {

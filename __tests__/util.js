@@ -73,7 +73,7 @@ describe('validateRequestObject', () => {
     expect(validateRequestObject(null)).toBe(false)
   })
 
-  test('should return false if version is not \'2.0\'', () => {
+  test('should return false if version is not ’2.0’', () => {
     expect(validateRequestObject({
       jsonrpc: '20',
       method: 'foo'

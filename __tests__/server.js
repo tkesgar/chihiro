@@ -173,7 +173,7 @@ describe('dispatchRequest', () => {
   })
 
   test('should return correct responses for each requests in array', async () => {
-    const handler = jest.fn((method, params) => {
+    const handler = jest.fn((method, parameters) => {
       if (method === 'throw1') {
         const error = new Error('throw1')
         error.code = 1
@@ -185,7 +185,7 @@ describe('dispatchRequest', () => {
         throw new Error('foo')
       }
 
-      return {[method]: params || null}
+      return {[method]: parameters || null}
     })
     const server = new Server(handler)
 
@@ -254,7 +254,7 @@ describe('dispatchRequest', () => {
   })
 
   test('should return null if all requests in array does not have id', async () => {
-    const handler = jest.fn((method, params) => {
+    const handler = jest.fn((method, parameters) => {
       if (method === 'throw1') {
         const error = new Error('throw1')
         error.code = 1
@@ -266,7 +266,7 @@ describe('dispatchRequest', () => {
         throw new Error('foo')
       }
 
-      return {[method]: params || null}
+      return {[method]: parameters || null}
     })
     const server = new Server(handler)
 
@@ -338,7 +338,7 @@ describe('dispatchJSON', () => {
   })
 
   test('should return response JSON', async () => {
-    const server = new Server((method, params) => [method, ...params])
+    const server = new Server((method, parameters) => [method, ...parameters])
 
     const requestJSON = JSON.stringify({
       jsonrpc: '2.0',
